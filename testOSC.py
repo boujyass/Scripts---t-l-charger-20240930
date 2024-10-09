@@ -48,7 +48,7 @@ current_accel = ACCEL.NEUTRAL
 
 def callback_x(*values):
     global current_accel
-
+    print("got values: {}".format(values))
     data = b''
 
     acceleration = ACCEL.NEUTRAL
@@ -79,7 +79,7 @@ def callback_x(*values):
 
 def callback_y(*values):
     global current_steering
-
+    print("got values: {}".format(values))
     data = b''
 
     steering = STEER.NEUTRAL
@@ -111,6 +111,7 @@ def callback_doubletap(address, *args):
 def callback_touchUP(*values):
     # if is_double_tap():
     #     throw_object()
+    print("got values: {}".format(values))
     data = b''
     if current_accel != ACCEL.NEUTRAL:
         if current_accel == ACCEL.UP:
