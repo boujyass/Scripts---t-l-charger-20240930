@@ -1,6 +1,9 @@
 import socket
 from steering_acceleration import STEER, ACCEL
-
+import time
+import math
+last_tap_time = 0
+DOUBLE_TAP_THRESHOLD = 0.5  # Time in seconds between taps to consider it a double tap
 STEER_THRES = 0.4
 ACCEL_THRES = 0.4
 STEER_ANGLE_THRES = 20
@@ -13,6 +16,12 @@ class Controller:
         self.current_accel = ACCEL.NEUTRAL
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.address = address
+        self.last_tap_time = 0
+        self.tap_count = 0
+        self.last_shake_time = 0
+        self.last_accel = (0, 0, 0)
+        self.shake_threshold = 15  # Ajustez cette valeur selon la sensibilité souhaitée
+        self.shake_interval = 0.5  # Temps minimum entre deux secousses détectées
 
 
     def send_data(self, data):
@@ -167,3 +176,36 @@ class Controller:
         self.process_acceleration(acceleration)
     def callback_pitch(*values):
         return
+    def callback_double_tap(self, *args):
+        print(f"Touch callback called with args: {args}")
+        current_time = time.time()
+        
+        if args and args[0] > 0:  # If touch count is greater than 0
+            if (current_time - self.last_tap_time) < DOUBLE_TAP_THRESHOLD:
+                self.tap_count += 1
+                if self.tap_count == 2:
+                    print("Double tap detected! Sending FIRE command.")
+                    self.send_data(b'FIRE')
+                    self.tap_count = 0
+            else:
+                self.tap_count = 1
+            
+            self.last_tap_time = current_time
+        else:
+            # Reset tap count if touch ended
+            self.tap_count = 0
+    def callback_accelerometer(self, *values):
+        print(f"Accelerometer callback called with values: {values}")
+        current_time = time.time()
+        
+        if len(values) >= 1:
+            x = values[0]  # Nous n'utilisons que la valeur de l'axe x
+            delta_accel = math.fabs(x - self.last_accel)
+            
+            if delta_accel > self.shake_threshold:
+                if current_time - self.last_shake_time > self.shake_interval:
+                    print("Shake detected! Sending RESCUE command.")
+                    self.send_data(b'RESCUE')
+                    self.last_shake_time = current_time
+            
+            self.last_accel = x
