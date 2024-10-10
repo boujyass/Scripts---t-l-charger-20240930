@@ -18,10 +18,12 @@ class Controller:
         self.address = address
         self.last_tap_time = 0
         self.tap_count = 0
+        self.shake_threshold = 10  # Adjust this value as needed
+        self.shake_window = 1.0  # Time window to detect shakes
+        self.shake_count_threshold = 3  # Number of shakes required
+        self.accel_history = []
         self.last_shake_time = 0
-        self.last_accel = (0, 0, 0)
-        self.shake_threshold = 15  # Ajustez cette valeur selon la sensibilité souhaitée
-        self.shake_interval = 0.5  # Temps minimum entre deux secousses détectées
+        self.previous_yaw=0.0
 
 
     def send_data(self, data):
@@ -54,8 +56,6 @@ class Controller:
         self.send_data(data)
         self.current_accel = acceleration
 
-
-
     def callback_y(self, *values):
         print("got values for y: {}".format(values))
         data = b''
@@ -81,8 +81,6 @@ class Controller:
         self.send_data(data)
         self.current_steering = steering
 
-
-
     def callback_touchUP(self, *values):
         
         data = b''
@@ -100,6 +98,9 @@ class Controller:
                 data = b'R_RIGHT'
 
         self.send_data(data)
+     
+     
+     
         
     def process_steering(self,steering):
         
@@ -149,6 +150,7 @@ class Controller:
         self.current_accel = acceleration
 
 
+
     def callback_yaw(self,*values):
         steering = STEER.NEUTRAL
 
@@ -160,9 +162,8 @@ class Controller:
             steering = STEER.LEFT
 
         self.process_steering(steering)
-
-   
-    # Roll will control the acceleration
+    
+    
     def callback_roll(self,*values):
         angle = values[0]
 
@@ -174,8 +175,13 @@ class Controller:
             acceleration = ACCEL.UP
 
         self.process_acceleration(acceleration)
+    
+    
     def callback_pitch(*values):
         return
+   
+   
+   
     def callback_double_tap(self, *args):
         print(f"Touch callback called with args: {args}")
         current_time = time.time()
@@ -194,18 +200,25 @@ class Controller:
         else:
             # Reset tap count if touch ended
             self.tap_count = 0
-    def callback_accelerometer(self, *values):
-        print(f"Accelerometer callback called with values: {values}")
-        current_time = time.time()
+  
+    def callback_yaw_shaker(self, *values):
+
+        print("Received yaw values: {}".format(values))
+        data = b''
+
+        SHAKE_THRESHOLD = 5.0  # You may need to adjust this value based on your sensor's output
+
+
+        current_yaw = values[0]
+        yaw_difference = abs(current_yaw - self.previous_yaw)
+
+        if yaw_difference > SHAKE_THRESHOLD:
+            data = b'RESCUE'
+            self.send_data(data)
+            print("Shake detected!")
+
+        self.previous_yaw = current_yaw
         
-        if len(values) >= 1:
-            x = values[0]  # Nous n'utilisons que la valeur de l'axe x
-            delta_accel = math.fabs(x - self.last_accel)
-            
-            if delta_accel > self.shake_threshold:
-                if current_time - self.last_shake_time > self.shake_interval:
-                    print("Shake detected! Sending RESCUE command.")
-                    self.send_data(b'RESCUE')
-                    self.last_shake_time = current_time
-            
-            self.last_accel = x
+        
+        
+        

@@ -9,15 +9,14 @@ class OSCServer:
 
     def bind_callbacks(self):
         # This section is for controlling the game with the pad
-        # self.osc.bind(b'/multisense/pad/x', self.controller.callback_x)
-        # self.osc.bind(b'/multisense/pad/y', self.controller.callback_y)
-        # self.osc.bind(b'/multisense/pad/touchUP', self.controller.callback_touchUP)
-        # # This section is for controlling the game with orientation and firing with double tap
-        # self.osc.bind(b'/multisense/orientation/yaw', self.controller.callback_yaw)
-        # self.osc.bind(b'/multisense/orientation/roll', self.controller.callback_roll)
-        # self.osc.bind(b'/multisense/orientation/pitch', self.controller.callback_pitch)
-        # self.osc.bind(b"/multisense/pad/touchUP",self.controller.callback_double_tap)
-        self.osc.bind(b'/multisense/accelerometer/x', self.controller.callback_accelerometer)
+        self.osc.bind(b'/multisense/pad/x', self.controller.callback_x)
+        self.osc.bind(b'/multisense/pad/y', self.controller.callback_y)
+        self.osc.bind(b'/multisense/pad/touchUP', self.controller.callback_touchUP)
+        # This section is for controlling the game with orientation and firing with double tap
+        self.osc.bind(b'/multisense/orientation/yaw', self.controller.callback_yaw)
+        self.osc.bind(b'/multisense/orientation/roll', self.controller.callback_roll)
+        self.osc.bind(b'/multisense/orientation/pitch', self.controller.callback_pitch)
+        self.osc.bind(b'/multisense/orientation/yaw', self.controller.callback_yaw_shaker)
     def dump(self, address, *values):
         """Default handler for unbound OSC messages."""
         print(u'{}: {}'.format(
