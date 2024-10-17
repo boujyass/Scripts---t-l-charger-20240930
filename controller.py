@@ -44,7 +44,7 @@ class Controller:
             self.client_socket.sendto(data, self.address)
 
 
-    def callback_x(self, *values):
+    def callback_x_continuous(self, *values):
         print("got values for x: {}".format(values))
         data = b''
         acceleration = ACCEL.NEUTRAL
@@ -69,7 +69,7 @@ class Controller:
         self.send_data(data)
         self.current_accel = acceleration
 
-    def callback_y(self, *values):
+    def callback_y_continuous(self, *values):
         print("got values for y: {}".format(values))
         data = b''
         steering = STEER.NEUTRAL
@@ -94,7 +94,7 @@ class Controller:
         self.send_data(data)
         self.current_steering = steering
 
-    def callback_touchUP(self, *values):
+    def callback_touchUP_continuous(self, *values):
         
         data = b''
 
@@ -326,9 +326,10 @@ class Controller:
             # Reset acceleration direction if released
             self.accel_direction = ACCEL.NEUTRAL
 
-    # Callback methods for handling pad inputs
 
-    def callback_x_continuous(self, *values):
+
+    # Callback methods for handling pad inputs
+    def callback_x(self, *values):
         """Handle pad x-axis input for steering."""
         x = values[0]
         self.steering_value = min(abs(x), 1.0)  # Ensure value is between 0 and 1
@@ -342,7 +343,7 @@ class Controller:
             self.steering_direction = STEER.NEUTRAL
             self.steering_value = 0.0  # No steering
 
-    def callback_y_continuous(self, *values):
+    def callback_y(self, *values):
         """Handle pad y-axis input for acceleration."""
         y = values[0]
         self.accel_value = min(abs(y), 1.0)  # Ensure value is between 0 and 1
@@ -356,7 +357,7 @@ class Controller:
             self.accel_direction = ACCEL.NEUTRAL
             self.accel_value = 0.0  # No acceleration
 
-    def callback_touchUP_continuous(self, *values):
+    def callback_touchUP(self, *values):
         """Handle touch release event to reset controls."""
         # Reset steering and acceleration when touch is released
         self.steering_direction = STEER.NEUTRAL
