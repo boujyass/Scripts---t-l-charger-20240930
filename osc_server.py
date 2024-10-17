@@ -18,6 +18,7 @@ class OSCServer:
         # self.osc.bind(b'/multisense/orientation/pitch', self.controller.callback_pitch)
         # self.osc.bind(b"/multisense/pad/touchUP",self.controller.callback_double_tap)
         self.osc.bind(b'/multisense/accelerometer/x', self.controller.callback_accelerometer)
+        
     def dump(self, address, *values):
         """Default handler for unbound OSC messages."""
         print(u'{}: {}'.format(
