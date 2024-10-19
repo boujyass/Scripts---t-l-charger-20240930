@@ -9,12 +9,7 @@ class OSCServer:
 
     def bind_callbacks(self):
 
-
-        # self.osc.bind(b'/hand/left/direction', self.controller.callback_x)
-        # self.osc.bind(b'/hand/right/direction', self.controller.callback_y)
-        # self.osc.bind(b'/multisense/pad/touchUP', self.controller.callback_touchUP)
-
-        # This section is for controlling the game with the pad
+        # # This section is for controlling the game with the pad
         self.osc.bind(b'/multisense/pad/x', self.controller.callback_x)
         self.osc.bind(b'/multisense/pad/y', self.controller.callback_y)
         self.osc.bind(b'/multisense/pad/touchUP', self.controller.callback_touchUP)
