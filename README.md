@@ -13,6 +13,6 @@ In order to run the script, just run the mainTP1.py and STK_input_server and it 
 
 The files regarding the TP1 are:
 
-- mainTP1.py , steering_acceleration.py , controller.py and osc_server.py
+- mainTP1.py , steering_acceleration.py , controller.py and osc_server.py .
   and for the TP2:
-- face_tracking.py and handtracking.cs
+- face_tracking.py and handtracking.cs .
