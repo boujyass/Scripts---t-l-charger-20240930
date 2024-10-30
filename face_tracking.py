@@ -114,14 +114,6 @@ FONT_THICKNESS = 2
 TEXT_COLOR = (255, 0, 0)  # red
 
 
-#!hone fara2it
-# # Convert normalized coordinates to pixel coordinates
-# def _normalized_to_pixel_coordinates(normalized_x: float, normalized_y: float, image_width: int, image_height: int):
-#     # Convert normalized coordinates (0 to 1) to pixel coordinates
-#     x_px = min(int(normalized_x * image_width), image_width - 1)
-#     y_px = min(int(normalized_y * image_height), image_height - 1)
-#     return x_px, y_px
-
 
 def _normalized_to_pixel_coordinates(
     normalized_x: float, normalized_y: float, image_width: int, image_height: int
